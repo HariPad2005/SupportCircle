@@ -5,6 +5,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import Login from './screens/Login';
 import Signup from './screens/Signup';
 import Home from './screens/Home';
+import BloodDonationPage from './screens/BloodDonation';
 import Animated, { useSharedValue, useAnimatedStyle, withTiming, Easing } from 'react-native-reanimated';
 import { useEffect } from 'react';
 
@@ -65,6 +66,7 @@ export default function App() {
         <Stack.Screen name="Login" component={Login} options={{ title: '', headerShown: false }} />
         <Stack.Screen name="Signup" component={Signup} options={{ title: '', headerShown: false }} />
         <Stack.Screen name="Home" component={Home} options={{ title: '', headerShown: false }} />
+        <Stack.Screen name="BloodDonation" component={BloodDonationPage} options={{ title: '', headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
   );

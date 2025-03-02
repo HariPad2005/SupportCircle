@@ -23,7 +23,9 @@
     "react-native-reanimated": "^3.16.7",
     "react-native-safe-area-context": "^5.1.0",
     "react-native-screens": "^4.6.0",
-    "react-native-web": "~0.19.13"
+    "react-native-web": "~0.19.13",
+    "react-slideshow-image": "^4.3.2",
+    "slide": "^1.1.6"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
