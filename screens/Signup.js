@@ -4,6 +4,8 @@ import { Text, View, TextInput, TouchableOpacity, StyleSheet, Alert, Image, Imag
 import { MaterialIcons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Login from './Login';
+import { supabase } from '../supabase';
+
 const Signup = () => {
   const navigation = useNavigation();
   const [username, setUsername] = useState('');
@@ -70,10 +72,25 @@ const Signup = () => {
     return true;
   };
 
-  const handleSignup = () => {
+  const handleSignup = async () => {
     if (validateSignup()) {
-      Alert.alert('Success', 'Signup successful!');
-      navigation.navigate('Login'); // Navigate to login page after successful signup
+      const { data, error } = await supabase.from('users').insert([
+        {
+          username: username,
+          email: email,
+          aadhaar: aadharCard,
+          contact: contactNumber,
+          pan: panCard,
+          dob: dateOfBirth.toISOString().split('T')[0],
+          password: password,
+        },
+      ]);
+      if (error) {
+        Alert.alert('Error', error.message);
+      } else {
+        Alert.alert('Success', 'Signup successful!');
+        navigation.navigate('Login');
+      }
     }
   };
   return (
@@ -104,7 +121,7 @@ const Signup = () => {
 
           <TextInput
             style={styles.input}
-            placeholder="Aadhar Card"
+            placeholder="Aadhaar Card"
             placeholderTextColor="#bbb"
             value={aadharCard}
             onChangeText={setAadharCard}

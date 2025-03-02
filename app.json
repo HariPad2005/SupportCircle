@@ -23,6 +23,13 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-font"
+    ],
+    "extra": {
+      "SUPABASE_URL": "https://zuxaatfebyefbrlhbjgv.supabase.co",
+      "SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp1eGFhdGZlYnllZmJybGhiamd2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDA5MjUyNjQsImV4cCI6MjA1NjUwMTI2NH0.yxKJcu8QTX3GgMXflFLZxJOcFtHRa3B3iW2Yto8kUKs"
     }
   }
 }
