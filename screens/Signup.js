@@ -75,7 +75,7 @@ const Signup = () => {
   const handleSignup = async () => {
     if (validateSignup()) {
       const { data, error } = await supabase.from('users').insert([
-        {
+        { 
           username: username,
           email: email,
           aadhaar: aadharCard,
