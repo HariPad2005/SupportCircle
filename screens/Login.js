@@ -3,6 +3,7 @@ import { useNavigation } from '@react-navigation/native';
 import { Text, View, TextInput, TouchableOpacity, StyleSheet, Alert, Image } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient'; // Import LinearGradient
+import { supabase } from '../supabase';
 
 const Login = () => {
   const navigation = useNavigation();
@@ -19,22 +20,47 @@ const Login = () => {
       Alert.alert('Error', 'Please fill in both email and password.');
       return false;
     }
-    const emailRegex = /\S+@\S+\.\S+/;
-    if (!emailRegex.test(email)) {
-      Alert.alert('Error', 'Please enter a valid email address.');
-      return false;
-    }
-    if (password.length < 6) {
-      Alert.alert('Error', 'Password must be at least 6 characters long.');
-      return false;
-    }
-    return true;
+    //const emailRegex = /\S+@\S+\.\S+/;
+    //if (!emailRegex.test(email)) {
+    //  Alert.alert('Error', 'Please enter a valid email address.');
+    //  return false;
+    //}
+    //if (password.length < 6) {
+    //  Alert.alert('Error', 'Password must be at least 6 characters long.');
+    //  return false;
+    //}
+    //return true;
   };
 
-  const handleLogin = () => {
-    if (validateLogin()) {
-      Alert.alert('Success', 'Login successful!')
-      navigation.navigate("Home");
+  const handleLogin = async () => {
+    if (!validateLogin()) return;
+
+    try {
+      // Fetch user from Supabase
+      const { data, error } = await supabase
+        .from('users')
+        .select('*')
+        .eq('email', email)
+        .single(); // Fetch only one record
+
+      if (error || !data) {
+        Alert.alert('Login Failed', 'Invalid email or password.');
+        return;
+      }
+
+      // Validate password (assuming plaintext password stored)
+      if (data.password !== password) {
+        Alert.alert('Login Failed', 'Invalid email or password.');
+        return;
+      }
+
+      // If successful, navigate to dashboard
+      Alert.alert('Success', 'Login successful!');
+      navigation.navigate('Home');
+
+    } catch (error) {
+      console.error('Login Error:', error);
+      Alert.alert('Error', 'Something went wrong. Please try again.');
     }
   };
 
