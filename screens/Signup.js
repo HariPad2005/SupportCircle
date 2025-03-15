@@ -4,6 +4,7 @@ import { Text, View, TextInput, TouchableOpacity, StyleSheet, Alert, Image, Imag
 import { MaterialIcons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Login from './Login';
+import OTPVerification from './OTPVerification';
 import { supabase } from '../supabase';
 
 const Signup = () => {
@@ -18,6 +19,7 @@ const Signup = () => {
   const [dateOfBirth, setDateOfBirth] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [secureText, setSecureText] = useState(true);
+  const [loading, setLoading] = useState(false)
 
   const togglePasswordVisibility = () => {
     setSecureText(!secureText);
@@ -73,26 +75,67 @@ const Signup = () => {
   };
 
   const handleSignup = async () => {
-    if (validateSignup()) {
-      const { data, error } = await supabase.from('users').insert([
-        { 
-          username: username,
-          email: email,
-          aadhaar: aadharCard,
-          contact: contactNumber,
-          pan: panCard,
-          dob: dateOfBirth.toISOString().split('T')[0],
-          password: password,
+    if (!validateSignup()) return;
+  
+    try {
+      let { data: existingUser, error: userError } = await supabase
+      .from('auth.users')
+      .select('id')
+      .eq('email', email)
+      .single();
+
+    if (existingUser) {
+      Alert.alert('Signup Failed', 'Email is already registered.');
+      return;
+    }
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        username, 
+        options: {
+          data: {
+            username,
+            aadhaar: aadharCard,
+            pan: panCard,
+            dob: dateOfBirth.toISOString().split('T')[0],
+          },
         },
-      ]);
+      });
+  
       if (error) {
-        Alert.alert('Error', error.message);
-      } else {
-        Alert.alert('Success', 'Signup successful!');
-        navigation.navigate('Login');
+        Alert.alert('Signup Failed', error.message);
+        return;
       }
+  
+      if (data.user) {
+        Alert.alert('Success', 'Check your email for verification.');
+        navigation.navigate('OTPVerification', { email: email }); // Navigate to OTP screen
+      }
+    } catch (err) {
+      Alert.alert('Error', 'Something went wrong. Try again.');
     }
   };
+
+  // const handleSignup = async () => {
+  //   try {
+  //     const { data, error } = await supabase.auth.signUp({
+  //       email: email,
+  //       password: password,
+  //     });
+  
+  //     if (error) {
+  //       Alert.alert('Signup Failed', error.message);
+  //       return;
+  //     }
+  
+  //     Alert.alert('Success', 'Check your email for verification.');
+  //     navigation.navigate('OTPVerification', { email: email });
+  //   } catch (err) {
+  //     Alert.alert('Error', 'Something went wrong. Try again.');
+  //   }
+  // };
+  
+  
   return (
     <ScrollView> 
       <View style={styles.container}>
