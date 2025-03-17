@@ -2406,9 +2406,10 @@ const Volunteers = ({ route }) => {
   );
 };
 
-const Donors = () => {
+const Donors = ({route}) => {
   const [donors, setDonors] = useState([]);
   const [donorCount, setDonorCount] = useState(0);
+  const campaignId = route.params.campaignId;
 
   useEffect(() => {
     fetchDonors(); 
@@ -2434,7 +2435,8 @@ const Donors = () => {
       const { data, error } = await supabase
         .from('donors')
         .select('*')
-        .eq('donated', 1);
+        .eq('donated', 1)
+        .eq('campaign_id', campaignId);
 
       if (error) throw error;
       setDonors(data);
@@ -2520,7 +2522,7 @@ const DonationDetailsPage = ({ route }) => {
         }}
       >
         <Tab.Screen name="Volunteers" component={Volunteers} initialParams={{ campaignId }} />
-        <Tab.Screen name="Donors" component={Donors} />
+        <Tab.Screen name="Donors" component={Donors} initialParams={{ campaignId }} />
       </Tab.Navigator>
     </View>
   );
