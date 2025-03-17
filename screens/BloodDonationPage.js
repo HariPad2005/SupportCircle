@@ -1045,6 +1045,7 @@ const YourCampaigns = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [form, setForm] = useState({ name: '', description: '', venue: '', date: new Date(), start_time: '', end_time: '' });
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [editMode, setEditMode] = useState(false);
   const navigation = useNavigation();
   const modalOpacity = useState(new Animated.Value(0))[0];
 
@@ -1088,8 +1089,24 @@ const YourCampaigns = () => {
       console.error('Error fetching user campaigns:', error);
     }
   };
+  const validateForm = () => {
+    const { name, description, venue, start_time, end_time } = form;
+    if (!name || !description || !venue || !start_time || !end_time) {
+      Alert.alert('Error', 'Please fill in all the fields.');
+      return false;
+    }
+
+    const timeRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
+    if (!timeRegex.test(start_time) || !timeRegex.test(end_time)) {
+      Alert.alert('Error', 'Time must be in HH:MM format.');
+      return false;
+    }
+    
+    return true;
+  };
 
   const addCampaign = async () => {
+    if (!validateForm()) return;
     try {
       const { data: userData, error: userError } = await supabase.auth.getUser();
       if (userError) {
@@ -1108,6 +1125,36 @@ const YourCampaigns = () => {
       setForm({ name: '', description: '', venue: '', date: new Date(), start_time: '', end_time: '' });
     } catch (error) {
       console.error('Error adding campaign:', error);
+    }
+  };
+
+  const updateCampaign = async () => {
+    if (!validateForm()) return;
+    try {
+      const formattedDate = form.date.toISOString().split('T')[0];
+      const { data, error } = await supabase
+        .from('blood_campaigns')
+        .update({
+          name: form.name,
+          description: form.description,
+          venue: form.venue,
+          date: formattedDate,
+          start_time: form.start_time,
+          end_time: form.end_time,
+        })
+        .eq('id', form.id);
+
+      if (error) throw error;
+      fetchUserCampaigns();
+      setModalVisible(false);
+      setForm({ name: '', description: '', venue: '', date: new Date(), start_time: '', end_time: '' });
+      setEditMode(false);
+
+      Alert.alert('Success', 'Campaign details are updated successfully.');
+      
+
+    } catch (error) {
+      console.error('Error updating campaign:', error);
     }
   };
 
@@ -1153,6 +1200,30 @@ const YourCampaigns = () => {
       duration: 300,
       useNativeDriver: true,
     }).start(() => setModalVisible(false));
+    setForm({ name: '', description: '', venue: '', date: new Date(), start_time: '', end_time: '' });
+
+  };
+
+  const openEditModal = (campaign) => {
+    setForm({
+      id: campaign.id,
+      name: campaign.name,
+      description: campaign.description,
+      venue: campaign.venue,
+      date: new Date(campaign.date),
+      start_time: campaign.start_time,
+      end_time: campaign.end_time,
+    });
+    setEditMode(true);
+    openModal();
+  };
+
+  const handleSubmit = () => {
+    if (editMode) {
+      updateCampaign();
+    } else {
+      addCampaign();
+    }
   };
 
   return (
@@ -1175,6 +1246,9 @@ const YourCampaigns = () => {
               <Text>Time: {item.start_time} - {item.end_time}</Text>
               <Text>Status: {item.flag === 0 ? 'Pending Approval' : 'Accepted'}</Text>
             </TouchableOpacity>
+            <TouchableOpacity style={styles.editButton} onPress={() => openEditModal(item)}>
+              <MaterialIcons name="edit" size={24} color="#007bff" />
+            </TouchableOpacity>
             <TouchableOpacity style={styles.deleteButton} onPress={() => confirmDelete(item.id)}>
               <MaterialIcons name="delete" size={24} color="#ff0000" />
             </TouchableOpacity>
@@ -1184,7 +1258,7 @@ const YourCampaigns = () => {
       <Modal visible={modalVisible} transparent animationType="none">
         <Animated.View style={[styles.modalOverlay, { opacity: modalOpacity }]}>
           <View style={styles.modalContainer}>
-            <Text style={styles.modalTitle}>Add New Campaign</Text>
+            <Text style={styles.modalTitle}>{editMode ? 'Edit Campaign' : 'Add New Campaign'}</Text>
             <TextInput placeholder="Campaign Name" value={form.name} onChangeText={(text) => setForm({ ...form, name: text })} style={styles.input} />
             <TextInput placeholder="Description" value={form.description} onChangeText={(text) => setForm({ ...form, description: text })} style={styles.input} />
             <TextInput placeholder="Venue" value={form.venue} onChangeText={(text) => setForm({ ...form, venue: text })} style={styles.input} />
@@ -1205,8 +1279,8 @@ const YourCampaigns = () => {
             <TextInput placeholder="Start Time (HH:MM)" value={form.start_time} onChangeText={(text) => setForm({ ...form, start_time: text })} style={styles.input} />
             <TextInput placeholder="End Time (HH:MM)" value={form.end_time} onChangeText={(text) => setForm({ ...form, end_time: text })} style={styles.input} />
             <View style={styles.modalButtons}>
-              <TouchableOpacity style={styles.submitButton} onPress={addCampaign}>
-                <Text style={styles.submitButtonText}>Submit</Text>
+              <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
+                <Text style={styles.submitButtonText}>{editMode ? 'Update' : 'Submit'}</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.cancelButton} onPress={closeModal}>
                 <Text style={styles.cancelButtonText}>Cancel</Text>
@@ -1243,7 +1317,6 @@ export default function BloodDonationPage() {
     </View>
   );
 }
-
 const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
@@ -1354,5 +1427,14 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '700',
     color: '#333',
+  },
+  deleteButton: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    padding: 5,
+    // backgroundColor: '#fff',
+    borderRadius: 5,
+    // elevation: 3,
   },
 });

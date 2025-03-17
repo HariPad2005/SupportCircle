@@ -721,13 +721,14 @@ export default function Home() {
   const navigateToDonationPage = (donationType) => {
     if (donationType === 'donate1') {
       navigation.navigate('BloodDonation');
-    } else if (donationType === 'donate4') {
-      navigation.navigate('fundingrequests');
-    }
+    } 
+    // else if (donationType === 'donate4') {
+    //   navigation.navigate('fundingrequests');
+    // }
   };
 
   const navigateToHelpList = () => {
-    navigation.navigate('helplist');
+    // navigation.navigate('helplist');
   };
 
   return (
@@ -788,7 +789,7 @@ export default function Home() {
         </View>
 
         {/* Redirective Text as Button */}
-        <TouchableOpacity style={styles.requestButton} onPress={navigateToRequest}>
+        <TouchableOpacity style={styles.requestButton} onPress={navigateToHelpList}>
           <Text style={styles.requestButtonText}>Need help? Post your request here!</Text>
         </TouchableOpacity>
       </ScrollView>

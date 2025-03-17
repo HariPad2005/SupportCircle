@@ -6,15 +6,15 @@ import { LinearGradient } from 'expo-linear-gradient'; // Import LinearGradient
 import { supabase } from '../supabase';
 
 const Login = () => {
-  useEffect(() => {
-    const checkSession = async () => {
-      const { data, error } = await supabase.auth.getSession();
-      if (data.session) {
-        navigation.navigate('Home'); // Redirect to home if user is already logged in
-      }
-    };
-    checkSession();
-  }, []);
+  // useEffect(() => {
+  //   const checkSession = async () => {
+  //     const { data, error } = await supabase.auth.getSession();
+  //     if (data.session) {
+  //       navigation.navigate('Home'); // Redirect to home if user is already logged in
+  //     }
+  //   };
+  //   checkSession();
+  // }, []);
   const navigation = useNavigation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
