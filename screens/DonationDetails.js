@@ -2068,8 +2068,8 @@ const Volunteers = ({ route }) => {
       Alert.alert('Error', 'Phone number must be 10 digits.');
       return;
     }
-    if (!['2', '3', '4'].includes(year) && isStudent) {
-      Alert.alert('Error', 'Year must be a single digit (2, 3, or 4).');
+    if (!['1','2', '3', '4'].includes(year) && isStudent) {
+      Alert.alert('Error', 'Year must be a single digit (1,2, 3, or 4).');
       return;
     }
     if (regNo.length !== 12 && isStudent) {
@@ -2151,12 +2151,12 @@ const Volunteers = ({ route }) => {
     }
   };
 
-  const deleteVolunteer = async (volunteerId) => {
+  const deleteVolunteer = async (volunteerName) => {
     try {
       const { error } = await supabase
         .from('donors')
         .delete()
-        .eq('id', volunteerId);
+        .eq('name', volunteerName);
 
       if (error) throw error;
       fetchVolunteers();
@@ -2165,24 +2165,24 @@ const Volunteers = ({ route }) => {
     }
   };
 
-  const confirmDelete = (volunteerId) => {
+  const confirmDelete = (volunteerName) => {
     Alert.alert(
       'Delete Volunteer',
       'Are you sure you want to delete this volunteer?',
       [
         { text: 'Cancel', style: 'cancel' },
-        { text: 'Delete', style: 'destructive', onPress: () => deleteVolunteer(volunteerId) },
+        { text: 'Delete', style: 'destructive', onPress: () => deleteVolunteer(volunteerName) },
       ],
       { cancelable: true }
     );
   };
 
-  const markAsDonated = async (volunteerId) => {
+  const markAsDonated = async (volunteerName) => {
     try {
       const { error } = await supabase
         .from('donors')
         .update({ donated: 1 })
-        .eq('id', volunteerId);
+        .eq('name', volunteerName);
 
       if (error) throw error;
       fetchVolunteers();
@@ -2392,10 +2392,10 @@ const Volunteers = ({ route }) => {
               <TouchableOpacity style={styles.editButton} onPress={() => editVolunteer(item)}>
                 <MaterialIcons name="edit" size={28} color="#007bff" />
               </TouchableOpacity>
-              <TouchableOpacity style={styles.deleteButton} onPress={() => confirmDelete(item.id)}>
+              <TouchableOpacity style={styles.deleteButton} onPress={() => confirmDelete(item.name)}>
                 <MaterialIcons name="delete" size={28} color="#ff0000" />
               </TouchableOpacity>
-              <TouchableOpacity style={styles.donateButton} onPress={() => markAsDonated(item.id)}>
+              <TouchableOpacity style={styles.donateButton} onPress={() => markAsDonated(item.name)}>
                 <Text style={styles.donateButtonText}>Mark as Donated</Text>
               </TouchableOpacity>
             </View>
@@ -2477,7 +2477,7 @@ const Donors = ({route}) => {
       <Text style={styles.heading}>Donors List ({donorCount})</Text>
       <FlatList
         data={donors}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item) => item.name.toString()}
         renderItem={({ item }) => (
           <View style={styles.donorCard}>
             {item.name && <Text style={styles.donorText}>Name: {item.name}</Text>}
