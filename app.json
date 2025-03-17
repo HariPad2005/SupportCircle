@@ -19,7 +19,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.hariharan_padmanaban.SupportCircle"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -29,7 +30,10 @@
     ],
     "extra": {
       "SUPABASE_URL": "https://zuxaatfebyefbrlhbjgv.supabase.co",
-      "SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp1eGFhdGZlYnllZmJybGhiamd2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDA5MjUyNjQsImV4cCI6MjA1NjUwMTI2NH0.yxKJcu8QTX3GgMXflFLZxJOcFtHRa3B3iW2Yto8kUKs"
+      "SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp1eGFhdGZlYnllZmJybGhiamd2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDA5MjUyNjQsImV4cCI6MjA1NjUwMTI2NH0.yxKJcu8QTX3GgMXflFLZxJOcFtHRa3B3iW2Yto8kUKs",
+      "eas": {
+        "projectId": "5ba18f62-ded3-4a68-b972-02938505b0df"
+      }
     }
   }
 }
