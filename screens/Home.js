@@ -722,9 +722,9 @@ export default function Home() {
     if (donationType === 'donate1') {
       navigation.navigate('BloodDonation');
     } 
-    // else if (donationType === 'donate4') {
-    //   navigation.navigate('fundingrequests');
-    // }
+    else if (donationType === 'donate4') {
+      navigation.navigate('VoluntaryDonation');
+    }
   };
 
   const navigateToHelpList = () => {
@@ -778,14 +778,24 @@ export default function Home() {
               <MaterialIcons name="arrow-forward" size={24} color="#fff" style={styles.arrowIcon} />
             </LinearGradient>
           </TouchableOpacity>
-
+ 
+          
           <TouchableOpacity onPress={() => navigateToDonationPage('donate4')}>
+            <LinearGradient colors={['#4caf50', '#388e3c']} style={styles.gridItem}>
+              <Image source={require('../assets/donate2.png')} style={styles.gridImage} />
+              <Text style={styles.gridText}>Voluntary Donation</Text>
+              <MaterialIcons name="arrow-forward" size={24} color="#fff" style={styles.arrowIcon} />
+            </LinearGradient>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={() => navigateToDonationPage('donate3')}>
             <LinearGradient colors={['#4caf50', '#388e3c']} style={styles.gridItem}>
               <Image source={require('../assets/donate4.png')} style={styles.gridImage} />
               <Text style={styles.gridText}>Fund Raising</Text>
               <MaterialIcons name="arrow-forward" size={24} color="#fff" style={styles.arrowIcon} />
             </LinearGradient>
           </TouchableOpacity>
+
         </View>
 
         {/* Redirective Text as Button */}
