@@ -153,6 +153,7 @@ import BloodDonationPage from './screens/BloodDonationPage';
 import DonationDetailsPage from './screens/DonationDetails';
 import OTPVerification from './screens/OTPVerification';
 import VoluntaryDonationPage from './screens/VoluntaryDonation';
+import VoluntaryDonationDetailsPage from './screens/VoluntaryDonationDetails';
 import Animated, { useSharedValue, useAnimatedStyle, withTiming, Easing } from 'react-native-reanimated';
 import { useEffect, useState } from 'react';
 import Profile from './screens/Profile';
@@ -243,6 +244,7 @@ export default function App() {
         <Stack.Screen name="BloodDonation" component={BloodDonationPage} options={{ title: '', headerShown: false }} />
         <Stack.Screen name="DonationDetails" component={DonationDetailsPage} options={{ title: '', headerShown: false }} />
         <Stack.Screen name="VoluntaryDonation" component={VoluntaryDonationPage} options={{ title: '', headerShown: false }} />
+        <Stack.Screen name="VoluntaryDonationDetails" component={VoluntaryDonationDetailsPage} options={{ title: '', headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
   );

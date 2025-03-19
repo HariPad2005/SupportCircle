@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, FlatList, Modal, TextInput, Button, ScrollView, Animated, Alert } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
@@ -20,7 +19,7 @@ const OngoingCampaigns = () => {
       .channel('ongoing_campaigns') // Give a unique channel name
       .on(
         'postgres_changes', 
-        { event: '*', schema: 'public', table: 'blood_campaigns' }, 
+        { event: '*', schema: 'public', table: 'voluntary_campaigns' }, 
         (payload) => {
           console.log('Realtime update received:', payload);
           fetchOngoingCampaigns(); // Fetch latest data when a change occurs
@@ -36,9 +35,9 @@ const OngoingCampaigns = () => {
   const fetchOngoingCampaigns = async () => {
     try {
       const { data, error } = await supabase
-        .from('blood_campaigns')
+        .from('voluntary_campaigns')
         .select('*')
-        .eq('flag', 1);
+        .eq('status', 1);
 
       if (error) throw error;
       setCampaigns(data);
@@ -54,7 +53,8 @@ const OngoingCampaigns = () => {
           <Text style={styles.campaignTitle}>{item.name}</Text>
           <Text>{item.description}</Text>
           <Text>Venue: {item.venue}</Text>
-          <Text>Date: {item.date}</Text>
+          <Text>Start Date: {item.start_date}</Text>
+          <Text>End Date: {item.end_date}</Text>
           <Text>Time: {item.start_time} - {item.end_time}</Text>
         </View>
       ))}
@@ -65,7 +65,7 @@ const OngoingCampaigns = () => {
 const YourCampaigns = () => {
   const [campaigns, setCampaigns] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
-  const [form, setForm] = useState({ name: '', description: '', venue: '', date: new Date(), start_time: '', end_time: '' });
+  const [form, setForm] = useState({ name: '', description: '', venue: '', start_date: new Date(), end_date: new Date(), start_time: '', end_time: '', status: 'pending' });
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const navigation = useNavigation();
@@ -79,7 +79,7 @@ const YourCampaigns = () => {
       .channel('realtime_campaigns') // Give a unique channel name
       .on(
         'postgres_changes', 
-        { event: '*', schema: 'public', table: 'blood_campaigns' }, 
+        { event: '*', schema: 'public', table: 'voluntary_campaigns' }, 
         (payload) => {
           console.log('Realtime update:', payload);
           fetchUserCampaigns(); // Fetch latest data when a change occurs
@@ -100,7 +100,7 @@ const YourCampaigns = () => {
       if (!userId) throw new Error('User not authenticated');
 
       const { data, error } = await supabase
-        .from('blood_campaigns')
+        .from('voluntary_campaigns')
         .select('*')
         .eq('user_id', userId); // Fetch campaigns where user_id matches the logged-in user
 
@@ -111,9 +111,10 @@ const YourCampaigns = () => {
       console.error('Error fetching user campaigns:', error);
     }
   };
+
   const validateForm = () => {
-    const { name, description, venue, start_time, end_time } = form;
-    if (!name || !description || !venue || !start_time || !end_time) {
+    const { name, description, venue, start_time, end_time, start_date, end_date } = form;
+    if (!name || !description || !venue || !start_time || !end_time || !start_date || !end_date) {
       Alert.alert('Error', 'Please fill in all the fields.');
       return false;
     }
@@ -123,7 +124,7 @@ const YourCampaigns = () => {
       Alert.alert('Error', 'Time must be in HH:MM format.');
       return false;
     }
-    
+
     return true;
   };
 
@@ -136,15 +137,16 @@ const YourCampaigns = () => {
         return;
       }
 
-      const formattedDate = form.date.toISOString().split('T')[0];
+      const formattedStartDate = form.start_date.toISOString().split('T')[0];
+      const formattedEndDate = form.end_date.toISOString().split('T')[0];
       const { data, error } = await supabase
-        .from('blood_campaigns')
-        .insert([{ ...form, user_id: userData.user?.id, date: formattedDate, flag: 0 }]);
+        .from('voluntary_campaigns')
+        .insert([{ ...form, user_id: userData.user?.id, start_date: formattedStartDate, end_date: formattedEndDate, created_timestamp: new Date().toISOString(), status: 0 }]);
 
       if (error) throw error;
       setCampaigns([...campaigns]);
       setModalVisible(false);
-      setForm({ name: '', description: '', venue: '', date: new Date(), start_time: '', end_time: '' });
+      setForm({ name: '', description: '', venue: '', start_date: new Date(), end_date: new Date(), start_time: '', end_time: '', status: 0 });
     } catch (error) {
       console.error('Error adding campaign:', error);
     }
@@ -153,28 +155,29 @@ const YourCampaigns = () => {
   const updateCampaign = async () => {
     if (!validateForm()) return;
     try {
-      const formattedDate = form.date.toISOString().split('T')[0];
+      const formattedStartDate = form.start_date.toISOString().split('T')[0];
+      const formattedEndDate = form.end_date.toISOString().split('T')[0];
       const { data, error } = await supabase
-        .from('blood_campaigns')
+        .from('voluntary_campaigns')
         .update({
           name: form.name,
           description: form.description,
           venue: form.venue,
-          date: formattedDate,
+          start_date: formattedStartDate,
+          end_date: formattedEndDate,
           start_time: form.start_time,
           end_time: form.end_time,
+          status: form.status,
         })
         .eq('id', form.id);
 
       if (error) throw error;
       fetchUserCampaigns();
       setModalVisible(false);
-      setForm({ name: '', description: '', venue: '', date: new Date(), start_time: '', end_time: '' });
+      setForm({ name: '', description: '', venue: '', start_date: new Date(), end_date: new Date(), start_time: '', end_time: '', status: 'pending' });
       setEditMode(false);
 
       Alert.alert('Success', 'Campaign details are updated successfully.');
-      
-
     } catch (error) {
       console.error('Error updating campaign:', error);
     }
@@ -184,7 +187,7 @@ const YourCampaigns = () => {
     try {
       console.log(campaignId);
       const { error } = await supabase
-        .from('blood_campaigns')
+        .from('voluntary_campaigns')
         .delete()
         .eq('id', campaignId);
 
@@ -222,8 +225,7 @@ const YourCampaigns = () => {
       duration: 300,
       useNativeDriver: true,
     }).start(() => setModalVisible(false));
-    setForm({ name: '', description: '', venue: '', date: new Date(), start_time: '', end_time: '' });
-
+    setForm({ name: '', description: '', venue: '', start_date: new Date(), end_date: new Date(), start_time: '', end_time: '', status: 'pending' });
   };
 
   const openEditModal = (campaign) => {
@@ -232,9 +234,11 @@ const YourCampaigns = () => {
       name: campaign.name,
       description: campaign.description,
       venue: campaign.venue,
-      date: new Date(campaign.date),
+      start_date: new Date(campaign.start_date),
+      end_date: new Date(campaign.end_date),
       start_time: campaign.start_time,
       end_time: campaign.end_time,
+      status: campaign.status,
     });
     setEditMode(true);
     openModal();
@@ -255,18 +259,19 @@ const YourCampaigns = () => {
       </TouchableOpacity>
       <ScrollView contentContainerStyle={styles.scrollView}>
         {campaigns.map((item) => (
-          <View key={item.id} style={[styles.campaignCard, item.flag === 1 ? styles.activeCampaign : {}]}>
+          <View key={item.id} style={[styles.campaignCard, item.status === 1 ? styles.activeCampaign : {}]}>
             <TouchableOpacity
               style={styles.campaignContent}
-              disabled={item.flag !== 1}
-              onPress={() => navigation.navigate('DonationDetails', { campaignId: item.id })}
+              disabled={item.status !== 1}
+              onPress={() => navigation.navigate('VoluntaryDonationDetails', { campaignId: item.id })}
             >
               <Text style={styles.campaignTitle}>{item.name}</Text>
               <Text>{item.description}</Text>
               <Text>Venue: {item.venue}</Text>
-              <Text>Date: {item.date}</Text>
+              <Text>Start Date: {item.start_date}</Text>
+              <Text>End Date: {item.end_date}</Text>
               <Text>Time: {item.start_time} - {item.end_time}</Text>
-              <Text>Status: {item.flag === 0 ? 'Pending Approval' : 'Accepted'}</Text>
+              <Text>Status: {item.status === 0 ? 'Pending Approval' : 'Accepted'}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.editButton} onPress={() => openEditModal(item)}>
               <MaterialIcons name="edit" size={24} color="#007bff" />
@@ -285,16 +290,30 @@ const YourCampaigns = () => {
             <TextInput placeholder="Description" value={form.description} onChangeText={(text) => setForm({ ...form, description: text })} style={styles.input} />
             <TextInput placeholder="Venue" value={form.venue} onChangeText={(text) => setForm({ ...form, venue: text })} style={styles.input} />
             <TouchableOpacity onPress={() => setShowDatePicker(true)}>
-              <Text style={styles.input}>{form.date.toDateString()}</Text>
+              <Text style={styles.input}>{form.start_date.toDateString()}</Text>
             </TouchableOpacity>
             {showDatePicker && (
               <DateTimePicker
-                value={form.date}
+                value={form.start_date}
                 mode="date"
                 display="default"
                 onChange={(event, selectedDate) => {
                   setShowDatePicker(false);
-                  if (selectedDate) setForm({ ...form, date: selectedDate });
+                  if (selectedDate) setForm({ ...form, start_date: selectedDate });
+                }}
+              />
+            )}
+            <TouchableOpacity onPress={() => setShowDatePicker(true)}>
+              <Text style={styles.input}>{form.end_date.toDateString()}</Text>
+            </TouchableOpacity>
+            {showDatePicker && (
+              <DateTimePicker
+                value={form.end_date}
+                mode="date"
+                display="default"
+                onChange={(event, selectedDate) => {
+                  setShowDatePicker(false);
+                  if (selectedDate) setForm({ ...form, end_date: selectedDate });
                 }}
               />
             )}
@@ -324,7 +343,7 @@ export default function VoluntaryDonationPage() {
         <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
           <MaterialIcons name="arrow-back" size={24} color="#fff" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Blood Donation Campaigns</Text>
+        <Text style={styles.headerTitle}>Voluntary Donation Campaigns</Text>
       </View>
       <Tab.Navigator
         screenOptions={{
@@ -339,6 +358,7 @@ export default function VoluntaryDonationPage() {
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
@@ -455,8 +475,6 @@ const styles = StyleSheet.create({
     top: 10,
     right: 10,
     padding: 5,
-    // backgroundColor: '#fff',
     borderRadius: 5,
-    // elevation: 3,
   },
 });
