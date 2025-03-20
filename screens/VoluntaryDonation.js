@@ -363,7 +363,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#007bff',
+    backgroundColor: '#ff8c00',
     paddingVertical: 20,
     paddingHorizontal: 10,
     elevation: 4,
@@ -371,7 +371,7 @@ const styles = StyleSheet.create({
   backButton: {
     top: 10,
     padding: 10,
-    backgroundColor: '#0056b4',
+    backgroundColor: '#ff8c00',
     borderRadius: 10,
     marginRight: 10,
   },
@@ -405,7 +405,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#d1f5d3', // Highlight active campaigns
   },
   addButton: {
-    backgroundColor: '#007bff',
+    backgroundColor: '#ff8c00',
     padding: 10,
     borderRadius: 5,
     margin: 10,

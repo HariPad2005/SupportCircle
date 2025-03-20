@@ -782,7 +782,7 @@ export default function Home() {
  
           
           <TouchableOpacity onPress={() => navigateToDonationPage('donate4')}>
-            <LinearGradient colors={['#4caf50', '#388e3c']} style={styles.gridItem}>
+            <LinearGradient colors={['#ff8c00', '#ff8c00']} style={styles.gridItem}>
               <Image source={require('../assets/donate2.png')} style={styles.gridImage} />
               <Text style={styles.gridText}>Voluntary Donation</Text>
               <MaterialIcons name="arrow-forward" size={24} color="#fff" style={styles.arrowIcon} />

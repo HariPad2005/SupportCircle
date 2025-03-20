@@ -317,6 +317,7 @@ const Volunteers = ({ route }) => {
   setIsStudent(volunteer.student === 1);
   setIsFaculty(volunteer.faculty === 1);
   setCurrentVolunteerId(volunteer.id);
+  console.log(volunteer.id);
   setItems(volunteer.items || []);
   setEditMode(true);
   openModal();
@@ -547,15 +548,15 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#007bff',
+    backgroundColor: '#ff8c00', // Orange theme
     paddingVertical: 20,
     paddingHorizontal: 10,
     elevation: 4,
-    marginTop: 20, // Added marginTop to move the header slightly down from the top
+    marginTop: 20,
   },
   backButton: {
     padding: 10,
-    backgroundColor: '#0056b4',
+    backgroundColor: '#e67e22', // Darker orange
     borderRadius: 10,
     marginRight: 10,
   },
@@ -564,10 +565,9 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#fff',
   },
- 
   container: {
     flex: 1,
-    backgroundColor: '#f9f9f9',
+    backgroundColor: '#fffaf0', // Light orange background
     padding: 20,
   },
   heading: {
@@ -575,11 +575,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 20,
-    color: '#007acc',
+    color: '#ff8c00', // Orange theme
   },
   input: {
     height: 50,
-    borderColor: '#ccc',
+    borderColor: '#e67e22', // Darker orange
     borderWidth: 1,
     borderRadius: 8,
     paddingLeft: 15,
@@ -588,7 +588,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   donateButton: {
-    backgroundColor: '#007acc',
+    backgroundColor: '#ff8c00', // Orange theme
     paddingVertical: 12,
     paddingHorizontal: 25,
     borderRadius: 30,
@@ -612,37 +612,36 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 6,
   },
-    // ...existing styles...
-    addItemContainer: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      marginBottom: 10,
-      flexWrap: 'wrap', // Ensure the fields wrap within the container
-    },
-    itemContainer: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      marginBottom: 10,
-      width: '100%', // Ensure the items take the full width
-    },
-    itemText: {
-      fontSize: 16,
-      color: '#333',
-      flex: 1, // Ensure the text takes available space
-    },
-    input: {
-      height: 50,
-      borderColor: '#ccc',
-      borderWidth: 1,
-      borderRadius: 8,
-      paddingLeft: 15,
-      marginBottom: 15,
-      fontSize: 16,
-      backgroundColor: '#fff',
-      flex: 1, // Ensure the input fields take available space
-      marginRight: 10, // Add margin between input fields
-    },
+  addItemContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+    flexWrap: 'wrap',
+  },
+  itemContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 10,
+    width: '100%',
+  },
+  itemText: {
+    fontSize: 16,
+    color: '#333',
+    flex: 1,
+  },
+  input: {
+    height: 50,
+    borderColor: '#e67e22', // Darker orange
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingLeft: 15,
+    marginBottom: 15,
+    fontSize: 16,
+    backgroundColor: '#fff',
+    flex: 1,
+    marginRight: 10,
+  },
   volunteerText: {
     fontSize: 16,
     color: '#333',
@@ -654,21 +653,17 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   deleteButton: {
-    // marginLeft: 10,
     top: 10,
   },
-    editButton: {
-      top: 10,
-    // marginRight: 5,
+  editButton: {
+    top: 10,
   },
   deleteButton2: {
     position: 'absolute',
     top: 10,
     right: 10,
     padding: 5,
-    // backgroundColor: '#fff',
     borderRadius: 5,
-    // elevation: 3,
   },
   radioContainer: {
     flexDirection: 'row',
@@ -681,16 +676,16 @@ const styles = StyleSheet.create({
     color: '#333',
     padding: 10,
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: '#e67e22', // Darker orange
     borderRadius: 8,
   },
   radioSelected: {
     fontSize: 16,
     color: '#fff',
     padding: 10,
-    backgroundColor: '#007acc',
+    backgroundColor: '#ff8c00', // Orange theme
     borderWidth: 1,
-    borderColor: '#007acc',
+    borderColor: '#ff8c00', // Orange theme
     borderRadius: 8,
   },
   donorCard: {
@@ -710,7 +705,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   addButton: {
-    backgroundColor: '#007acc',
+    backgroundColor: '#ff8c00', // Orange theme
     padding: 10,
     borderRadius: 5,
     margin: 10,
@@ -733,17 +728,17 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     alignItems: 'center',
     elevation: 10,
-    maxHeight: '90%', // Ensure the modal doesn't exceed the screen height
+    maxHeight: '90%',
   },
   modalTitle: {
     fontSize: 22,
     fontWeight: '700',
     marginBottom: 15,
-    color: '#007bff',
+    color: '#ff8c00', // Orange theme
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: '#e67e22', // Darker orange
     padding: 10,
     marginBottom: 10,
     borderRadius: 5,
@@ -770,18 +765,19 @@ const styles = StyleSheet.create({
   },
   quantityInput: {
     width: 60,
-    borderColor: '#ccc',
+    borderColor: '#e67e22', // Darker orange
     borderWidth: 1,
     borderRadius: 5,
     padding: 5,
     marginLeft: 10,
   },
   submitButton: {
-    backgroundColor: '#007bff',
+    backgroundColor: '#ff8c00', // Orange theme
     paddingVertical: 12,
     paddingHorizontal: 10,
-    borderRadius: 30,
-    marginRight: 10,
+    backgroundColor: '#ff8c00', // Orange theme
+    paddingVertical: 12,
+    paddingHorizontal: 10,
   },
   submitButtonText: {
     fontSize: 16,
