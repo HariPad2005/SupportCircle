@@ -684,6 +684,7 @@ import { useNavigation } from '@react-navigation/native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as Font from 'expo-font';
+// import Login from './Login';
 
 const width = Dimensions.get('window').width;
 

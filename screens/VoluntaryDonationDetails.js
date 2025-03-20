@@ -31,20 +31,24 @@ const Volunteers = ({ route }) => {
   const campaignId = route.params.campaignId;
   const [modalVisible, setModalVisible] = useState(false);
   const modalOpacity = useState(new Animated.Value(0))[0];
-  const [items, setItems] = useState({
-    "Rice & Pulses": { selected: false, quantity: '' },
-    "Atta & Cooking Oil": { selected: false, quantity: '' },
-    "Sanitary Pads & Diapers": { selected: false, quantity: '' },
-    "Toiletries": { selected: false, quantity: '' },
-    "Clothing": { selected: false, quantity: '' },
-    "Blankets & Towels": { selected: false, quantity: '' },
-    "First-Aid Kit & Basic Medicines": { selected: false, quantity: '' },
-    "Milk Powder & Biscuits": { selected: false, quantity: '' },
-    "Stationery for Children": { selected: false, quantity: '' },
-    "Walking Sticks & Slippers": { selected: false, quantity: '' },
-    "Other": { selected: false, quantity: '' },
-  });
-  const [otherItem, setOtherItem] = useState('');
+  // const [items, setItems] = useState({
+  //   "Rice & Pulses": { selected: false, quantity: '' },
+  //   "Atta & Cooking Oil": { selected: false, quantity: '' },
+  //   "Sanitary Pads & Diapers": { selected: false, quantity: '' },
+  //   "Toiletries": { selected: false, quantity: '' },
+  //   "Clothing": { selected: false, quantity: '' },
+  //   "Blankets & Towels": { selected: false, quantity: '' },
+  //   "First-Aid Kit & Basic Medicines": { selected: false, quantity: '' },
+  //   "Milk Powder & Biscuits": { selected: false, quantity: '' },
+  //   "Stationery for Children": { selected: false, quantity: '' },
+  //   "Walking Sticks & Slippers": { selected: false, quantity: '' },
+  //   "Other": { selected: false, quantity: '' },
+  // });
+  // const [otherItem, setOtherItem] = useState('');
+  const [items, setItems] = useState([]);
+  const [newItemName, setNewItemName] = useState('');
+  const [newItemUnit, setNewItemUnit] = useState('');
+  const [newItemQuantity, setNewItemQuantity] = useState('');
 
   useEffect(() => {
     fetchVolunteers();
@@ -133,6 +137,29 @@ const Volunteers = ({ route }) => {
     fetchVolunteers();
   };
 
+  const addItem = () => {
+    if (!newItemName || !newItemUnit || !newItemQuantity) {
+      Alert.alert('Error', 'Please fill in all the fields.');
+      return;
+    }
+  
+    const newItem = {
+      name: newItemName,
+      unit: newItemUnit,
+      quantity: newItemQuantity,
+    };
+  
+    setItems([...items, newItem]);
+    setNewItemName('');
+    setNewItemUnit('');
+    setNewItemQuantity('');
+  };
+
+  const deleteItem = (index) => {
+    const updatedItems = items.filter((_, i) => i !== index);
+    setItems(updatedItems);
+  };
+
   const addVolunteer = async () => {
     if (!name || !phone || !department || (!isStudent && !isFaculty)) {
       Alert.alert('Error', 'Please fill in all the fields.');
@@ -150,14 +177,7 @@ const Volunteers = ({ route }) => {
       Alert.alert('Error', 'Registration number must be 12 digits.');
       return;
     }
-
-    const selectedItems = {};
-    Object.keys(items).forEach((item) => {
-      if (items[item].selected) {
-        selectedItems[item] = items[item].quantity;
-      }
-    });
-
+  
     try {
       const volunteerData = {
         name,
@@ -168,14 +188,14 @@ const Volunteers = ({ route }) => {
         faculty: isFaculty ? 1 : 0,
         reg_no: isStudent ? regNo : null,
         year: isStudent ? year : null,
-        items: selectedItems,
+        items,
         created_timestamp: new Date().toISOString(),
       };
-
+  
       const { data, error } = await supabase
         .from('voluntary_donors')
         .insert([volunteerData]);
-
+  
       if (error) throw error;
       Alert.alert('Thank you for volunteering!', 'Your details have been submitted.');
       fetchVolunteers();
@@ -184,7 +204,7 @@ const Volunteers = ({ route }) => {
       console.error('Error adding volunteer:', error);
     }
   };
-
+  
   const updateVolunteer = async () => {
     if (!name || !phone || !department || (!isStudent && !isFaculty)) {
       Alert.alert('Error', 'Please fill in all the fields.');
@@ -202,14 +222,7 @@ const Volunteers = ({ route }) => {
       Alert.alert('Error', 'Registration number must be 12 digits.');
       return;
     }
-
-      const selectedItems = {};
-    Object.keys(items).forEach((item) => {
-      if (items[item].selected) {
-        selectedItems[item] = items[item].quantity;
-      }
-    });
-
+  
     try {
       const volunteerData = {
         name,
@@ -220,14 +233,14 @@ const Volunteers = ({ route }) => {
         faculty: isFaculty ? 1 : 0,
         reg_no: isStudent ? regNo : null,
         year: isStudent ? year : null,
-        items: selectedItems,
+        items,
       };
-
+  
       const { data, error } = await supabase
         .from('voluntary_donors')
         .update(volunteerData)
         .eq('id', currentVolunteerId);
-
+  
       if (error) throw error;
       Alert.alert('Volunteer updated successfully!', 'Your details have been updated.');
       fetchVolunteers();
@@ -292,38 +305,22 @@ const Volunteers = ({ route }) => {
     setIsFaculty(false);
     setEditMode(false);
     setCurrentVolunteerId(null);
-    setItems({
-      "Rice & Pulses": false,
-      "Atta & Cooking Oil": false,
-      "Sanitary Pads & Diapers": false,
-      "Toiletries": false,
-      "Clothing": false,
-      "Blankets & Towels": false,
-      "First-Aid Kit & Basic Medicines": false,
-      "Milk Powder & Biscuits": false,
-      "Stationery for Children": false,
-      "Walking Sticks & Slippers": false,
-      "Other": false,
-    });
-    setOtherItem('');
+    setItems([]);
   };
 
-  const editVolunteer = (volunteer) => {
-    setName(volunteer.name);
-    setPhone(volunteer.phone);
-    setDepartment(volunteer.department);
-    setRegNo(volunteer.reg_no);
-    setYear(volunteer.year);
-    setIsStudent(volunteer.student === 1);
-    setIsFaculty(volunteer.faculty === 1);
-    setCurrentVolunteerId(volunteer.id);
-    setItems(volunteer.items);
-    setOtherItem(volunteer.items.Other || '');
-    setEditMode(true);
-    openModal();
-    console.log("Hello");
-  };
-
+ const editVolunteer = (volunteer) => {
+  setName(volunteer.name);
+  setPhone(volunteer.phone);
+  setDepartment(volunteer.department);
+  setRegNo(volunteer.reg_no);
+  setYear(volunteer.year);
+  setIsStudent(volunteer.student === 1);
+  setIsFaculty(volunteer.faculty === 1);
+  setCurrentVolunteerId(volunteer.id);
+  setItems(volunteer.items || []);
+  setEditMode(true);
+  openModal();
+};
   return (
     <View style={styles.container}>
       <View style={styles.searchContainer}>
@@ -379,96 +376,106 @@ const Volunteers = ({ route }) => {
       <Modal visible={modalVisible} transparent animationType="none">
         <Animated.View style={[styles.modalOverlay, { opacity: modalOpacity }]}>
           <View style={styles.modalContainer}>
-            <ScrollView style={styles.scrollView}>
-              <Text style={styles.heading}>Volunteer Details Form</Text>
+          <ScrollView style={styles.scrollView} contentContainerStyle={{ paddingBottom: 20 }}>
+  <Text style={styles.heading}>Volunteer Details Form</Text>
 
-              <TextInput
-                style={styles.input}
-                placeholder="Your Name"
-                value={name}
-                onChangeText={setName}
-              />
+  <TextInput
+    style={styles.input}
+    placeholder="Your Name"
+    value={name}
+    onChangeText={setName}
+  />
 
-              <TextInput
-                style={styles.input}
-                placeholder="Contact Number"
-                value={phone}
-                keyboardType="phone-pad"
-                onChangeText={setPhone}
-              />
+  <TextInput
+    style={styles.input}
+    placeholder="Contact Number"
+    value={phone}
+    keyboardType="phone-pad"
+    onChangeText={setPhone}
+  />
 
-              <TextInput
-                style={styles.input}
-                placeholder="Department"
-                value={department}
-                onChangeText={setDepartment}
-              />
+  <TextInput
+    style={styles.input}
+    placeholder="Department"
+    value={department}
+    onChangeText={setDepartment}
+  />
 
-              <View style={styles.radioContainer}>
-                <TouchableOpacity onPress={() => { setIsStudent(true); setIsFaculty(false); }}>
-                  <Text style={isStudent ? styles.radioSelected : styles.radio}>Student</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => { setIsStudent(false); setIsFaculty(true); }}>
-                  <Text style={isFaculty ? styles.radioSelected : styles.radio}>Faculty</Text>
-                </TouchableOpacity>
-              </View>
+  <View style={styles.radioContainer}>
+    <TouchableOpacity onPress={() => { setIsStudent(true); setIsFaculty(false); }}>
+      <Text style={isStudent ? styles.radioSelected : styles.radio}>Student</Text>
+    </TouchableOpacity>
+    <TouchableOpacity onPress={() => { setIsStudent(false); setIsFaculty(true); }}>
+      <Text style={isFaculty ? styles.radioSelected : styles.radio}>Faculty</Text>
+    </TouchableOpacity>
+  </View>
 
-              {isStudent && (
-                <>
-                  <TextInput
-                    style={styles.input}
-                    placeholder="Year"
-                    value={year}
-                    onChangeText={setYear}
-                    keyboardType="numeric"
-                  />
-                  <TextInput
-                    style={styles.input}
-                    placeholder="Registration Number"
-                    value={regNo}
-                    onChangeText={setRegNo}
-                    keyboardType="numeric"
-                  />
-                </>
-              )}
+  {isStudent && (
+    <>
+      <TextInput
+        style={styles.input}
+        placeholder="Year"
+        value={year}
+        onChangeText={setYear}
+        keyboardType="numeric"
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Registration Number"
+        value={regNo}
+        onChangeText={setRegNo}
+        keyboardType="numeric"
+      />
+    </>
+  )}
 
-              <Text style={styles.heading}>Select Items</Text>
-              {Object.keys(items).map((item) => (
-                <View key={item} style={styles.checkboxContainer}>
-                  <Checkbox
-                    value={items[item].selected}
-                    onValueChange={(newValue) => setItems({ ...items, [item]: { ...items[item], selected: newValue } })}
-                  />
-                  <Text style={styles.checkboxLabel}>{item}</Text>
-                  {items[item].selected && (
-                    <TextInput
-                      style={styles.input}
-                      placeholder="Quantity"
-                      value={items[item].quantity}
-                      onChangeText={(quantity) => setItems({ ...items, [item]: { ...items[item], quantity } })}
-                      keyboardType="numeric"
-                    />
-                  )}
-                </View>
-              ))}
-              {items.Other.selected && (
-                <TextInput
-                  style={styles.input}
-                  placeholder="Other Item"
-                  value={otherItem}
-                  onChangeText={setOtherItem}
-                />
-              )}
+  <Text style={styles.heading}>Select Items</Text>
+  {/* <TouchableOpacity onPress={addItem}>
+    <MaterialIcons name="add" size={24} color="#007bff" />
+  </TouchableOpacity> */}
+  <View style={styles.addItemContainer}>
+    <TextInput
+      style={styles.input}
+      placeholder="Item Name"
+      value={newItemName}
+      onChangeText={setNewItemName}
+    />
+    <TextInput
+      style={styles.input}
+      placeholder="Unit (e.g., kg, ml)"
+      value={newItemUnit}
+      onChangeText={setNewItemUnit}
+    />
+    <TextInput
+      style={styles.input}
+      placeholder="Quantity"
+      value={newItemQuantity}
+      onChangeText={setNewItemQuantity}
+      keyboardType="numeric"
+    />
+    <TouchableOpacity onPress={addItem}>
+      <MaterialIcons name="add" size={24} color="#007bff" />
+    </TouchableOpacity>
+  </View>
 
-              <View style={styles.formButtons}>
-                <TouchableOpacity style={styles.submitButton} onPress={editMode ? updateVolunteer : addVolunteer}>
-                  <Text style={styles.submitButtonText}>{editMode ? 'Update Volunteer' : 'Submit Volunteer'}</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.cancelButton} onPress={closeModal}>
-                  <Text style={styles.cancelButtonText}>Cancel</Text>
-                </TouchableOpacity>
-              </View>
-            </ScrollView>
+  {items.map((item, index) => (
+    <View key={index} style={styles.itemContainer}>
+      <Text style={styles.itemText}>{item.name} - {item.quantity} {item.unit}</Text>
+      <TouchableOpacity onPress={() => deleteItem(index)}>
+        <MaterialIcons name="delete" size={24} color="#ff0000" />
+      </TouchableOpacity>
+    </View>
+  ))}
+
+  <View style={styles.formButtons}>
+    <TouchableOpacity style={styles.submitButton} onPress={editMode ? updateVolunteer : addVolunteer}>
+      <Text style={styles.submitButtonText}>{editMode ? 'Update Volunteer' : 'Submit Volunteer'}</Text>
+    </TouchableOpacity>
+    <TouchableOpacity style={styles.cancelButton} onPress={closeModal}>
+      <Text style={styles.cancelButtonText}>Cancel</Text>
+    </TouchableOpacity>
+  </View>
+</ScrollView>
           </View>
         </Animated.View>
       </Modal>
@@ -489,6 +496,13 @@ const Volunteers = ({ route }) => {
             ) : (
               <Text style={styles.volunteerText}>Faculty</Text>
             )}
+
+            <Text style={styles.volunteerText}>Donated Items:</Text>
+      {item.items && item.items.map((donatedItem, index) => (
+        <Text key={index} style={styles.volunteerText}>
+          {donatedItem.name} - {donatedItem.quantity} {donatedItem.unit}
+        </Text>
+      ))}
             <View style={styles.volunteerActions}>
               <TouchableOpacity style={styles.editButton} onPress={() => editVolunteer(item)}>
                 <MaterialIcons name="edit" size={28} color="#007bff" />
@@ -598,6 +612,37 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 6,
   },
+    // ...existing styles...
+    addItemContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginBottom: 10,
+      flexWrap: 'wrap', // Ensure the fields wrap within the container
+    },
+    itemContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      marginBottom: 10,
+      width: '100%', // Ensure the items take the full width
+    },
+    itemText: {
+      fontSize: 16,
+      color: '#333',
+      flex: 1, // Ensure the text takes available space
+    },
+    input: {
+      height: 50,
+      borderColor: '#ccc',
+      borderWidth: 1,
+      borderRadius: 8,
+      paddingLeft: 15,
+      marginBottom: 15,
+      fontSize: 16,
+      backgroundColor: '#fff',
+      flex: 1, // Ensure the input fields take available space
+      marginRight: 10, // Add margin between input fields
+    },
   volunteerText: {
     fontSize: 16,
     color: '#333',
@@ -688,6 +733,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     alignItems: 'center',
     elevation: 10,
+    maxHeight: '90%', // Ensure the modal doesn't exceed the screen height
   },
   modalTitle: {
     fontSize: 22,
@@ -711,6 +757,24 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginTop: 20,
+  },
+  checkboxContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  checkboxLabel: {
+    marginLeft: 8,
+    fontSize: 16,
+    flex: 1,
+  },
+  quantityInput: {
+    width: 60,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 5,
+    padding: 5,
+    marginLeft: 10,
   },
   submitButton: {
     backgroundColor: '#007bff',
@@ -770,8 +834,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
     scrollView: {
-    paddingHorizontal: 10,
-    paddingBottom: 80,
+    paddingHorizontal: 20,
+    paddingBottom: 100,
+    width: '100%',
   },
 });
 
