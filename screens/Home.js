@@ -772,7 +772,7 @@ export default function Home() {
 
         {/* Grid Container */}
         <View style={styles.gridContainer}>
-          <TouchableOpacity onPress={() => navigateToDonationPage('donate1')}>
+          <TouchableOpacity onPress={() => navigation.navigate('BloodDonation')}>
             <LinearGradient colors={['#ff6f61', '#de425b']} style={styles.gridItem}>
               <Image source={require('../assets/donate1.png')} style={styles.gridImage} />
               <Text style={styles.gridText}>Blood Donation</Text>
@@ -781,7 +781,7 @@ export default function Home() {
           </TouchableOpacity>
  
           
-          <TouchableOpacity onPress={() => navigateToDonationPage('donate4')}>
+          <TouchableOpacity onPress={() => navigation.navigate('VoluntaryDonation')}>
             <LinearGradient colors={['#ff8c00', '#ff8c00']} style={styles.gridItem}>
               <Image source={require('../assets/donate2.png')} style={styles.gridImage} />
               <Text style={styles.gridText}>Voluntary Donation</Text>
