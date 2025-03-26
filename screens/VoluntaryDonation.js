@@ -226,6 +226,7 @@ const YourCampaigns = () => {
       useNativeDriver: true,
     }).start(() => setModalVisible(false));
     setForm({ name: '', description: '', venue: '', start_date: new Date(), end_date: new Date(), start_time: '', end_time: '', status: 'pending' });
+    setEditMode(false);
   };
 
   const openEditModal = (campaign) => {
@@ -293,16 +294,17 @@ const YourCampaigns = () => {
               <Text style={styles.input}>{form.start_date.toDateString()}</Text>
             </TouchableOpacity>
             {showDatePicker && (
-              <DateTimePicker
-                value={form.start_date}
-                mode="date"
-                display="default"
-                onChange={(event, selectedDate) => {
-                  setShowDatePicker(false);
-                  if (selectedDate) setForm({ ...form, start_date: selectedDate });
-                }}
-              />
-            )}
+            <DateTimePicker
+              value={form.start_date || new Date()}
+              mode="date"
+              display="default"
+              onChange={(event, selectedDate) => {
+                setShowDatePicker(false);
+                if (selectedDate) setForm({ ...form, start_date: selectedDate });
+              }}
+            />
+          )}
+
             <TouchableOpacity onPress={() => setShowDatePicker(true)}>
               <Text style={styles.input}>{form.end_date.toDateString()}</Text>
             </TouchableOpacity>

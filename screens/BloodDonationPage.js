@@ -1266,16 +1266,17 @@ const YourCampaigns = () => {
               <Text style={styles.input}>{form.date.toDateString()}</Text>
             </TouchableOpacity>
             {showDatePicker && (
-              <DateTimePicker
-                value={form.date}
+            <DateTimePicker
+                value={form.date || new Date()}
                 mode="date"
                 display="default"
                 onChange={(event, selectedDate) => {
-                  setShowDatePicker(false);
+                setShowDatePicker(false);
                   if (selectedDate) setForm({ ...form, date: selectedDate });
                 }}
               />
             )}
+
             <TextInput placeholder="Start Time (HH:MM)" value={form.start_time} onChangeText={(text) => setForm({ ...form, start_time: text })} style={styles.input} />
             <TextInput placeholder="End Time (HH:MM)" value={form.end_time} onChangeText={(text) => setForm({ ...form, end_time: text })} style={styles.input} />
             <View style={styles.modalButtons}>
