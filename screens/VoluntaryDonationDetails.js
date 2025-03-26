@@ -53,7 +53,7 @@ const Volunteers = ({ route }) => {
   useEffect(() => {
     fetchVolunteers();
     const subscription3 = supabase
-      .channel('realtime_volunteers') // Give a unique channel name
+      .channel('realtime_volunteers_2') // Give a unique channel name
       .on(
         'postgres_changes',
         { event: '*', schema: 'public', table: 'voluntary_donors' },

@@ -16,7 +16,7 @@ const OngoingCampaigns = () => {
 
     // Subscribe to real-time updates
     const subscription = supabase
-      .channel('ongoing_campaigns') // Give a unique channel name
+      .channel('ongoing_campaigns_2') // Give a unique channel name
       .on(
         'postgres_changes', 
         { event: '*', schema: 'public', table: 'voluntary_campaigns' }, 
