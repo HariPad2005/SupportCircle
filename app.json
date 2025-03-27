@@ -35,17 +35,12 @@
       "eas": {
         "projectId": "5ba18f62-ded3-4a68-b972-02938505b0df"
       },
-      "expoRuntimeVersion": "1.0.0",   // Set your app's runtime version
-      "expoChannelName": "production", // Specify the update channel
-      "expoPlatform": "android"
+
     },
     "runtimeVersion": {
       "policy": "appVersion"
     },
-    "updates": {
-      "url": "https://u.expo.dev/5ba18f62-ded3-4a68-b972-02938505b0df",
-      "fallbackToCacheTimeout": 0
-    },
+
     "owner": "hariharan_padmanaban"
   }
 }
