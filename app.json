@@ -34,14 +34,17 @@
       "EXPO_PUBLIC_SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp1eGFhdGZlYnllZmJybGhiamd2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDA5MjUyNjQsImV4cCI6MjA1NjUwMTI2NH0.yxKJcu8QTX3GgMXflFLZxJOcFtHRa3B3iW2Yto8kUKs",
       "eas": {
         "projectId": "5ba18f62-ded3-4a68-b972-02938505b0df"
-      }
-
+      },
+      "expoRuntimeVersion": "1.0.0",   // Set your app's runtime version
+      "expoChannelName": "production", // Specify the update channel
+      "expoPlatform": "android"
     },
     "runtimeVersion": {
       "policy": "appVersion"
     },
     "updates": {
-      "url": "https://u.expo.dev/5ba18f62-ded3-4a68-b972-02938505b0df"
+      "url": "https://u.expo.dev/5ba18f62-ded3-4a68-b972-02938505b0df",
+      "fallbackToCacheTimeout": 0
     },
     "owner": "hariharan_padmanaban"
   }
