@@ -34,7 +34,8 @@
     "react-native-url-polyfill": "^2.0.0",
     "react-native-web": "~0.19.13",
     "react-slideshow-image": "^4.3.2",
-    "slide": "^1.1.6"
+    "slide": "^1.1.6",
+    "@sentry/react-native": "~6.3.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
