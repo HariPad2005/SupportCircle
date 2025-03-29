@@ -978,16 +978,18 @@
 // });
 
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, FlatList, Modal, TextInput, Button, ScrollView, Animated, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, FlatList, Modal, TextInput, Button, ScrollView, Animated, Alert, SafeAreaView } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { useNavigation } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { MaterialIcons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { supabase } from '../supabase';
 
-const Tab = createMaterialTopTabNavigator();
+const Tab = createBottomTabNavigator();
 
-const OngoingCampaigns = () => {
+function OngoingCampaigns() {
   const [campaigns, setCampaigns] = useState([]);
 
   useEffect(() => {
@@ -1040,7 +1042,7 @@ const OngoingCampaigns = () => {
   );
 };
 
-const YourCampaigns = () => {
+function YourCampaigns() {
   const [campaigns, setCampaigns] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [form, setForm] = useState({ name: '', description: '', venue: '', date: new Date(), start_time: '', end_time: '' });
@@ -1295,29 +1297,41 @@ const YourCampaigns = () => {
 };
 
 export default function BloodDonationPage() {
-  const navigation = useNavigation();
-
   return (
-    <View style={{ flex: 1 }}>
-      <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-          <MaterialIcons name="arrow-back" size={24} color="#fff" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Blood Donation Campaigns</Text>
-      </View>
-      <Tab.Navigator
-        screenOptions={{
-          tabBarStyle: { marginTop: 10 },
-          tabBarIndicatorStyle: { backgroundColor: '#007bff' },
-          tabBarLabelStyle: { fontSize: 14, fontWeight: 'bold' },
-        }}
-      >
-        <Tab.Screen name="Ongoing Campaigns" component={OngoingCampaigns} />
-        <Tab.Screen name="Your Campaigns" component={YourCampaigns} />
-      </Tab.Navigator>
-    </View>
+    
+    <Tab.Navigator
+      screenOptions={{
+        tabBarStyle: { marginTop: 10 },
+        tabBarIndicatorStyle: { backgroundColor: '#007bff' },
+        tabBarLabelStyle: { fontSize: 14, fontWeight: 'bold' },
+      }}
+    >
+      <Tab.Screen name="Ongoing Campaigns" component={OngoingCampaigns} />
+      <Tab.Screen name="Your Campaigns" component={YourCampaigns} />
+    </Tab.Navigator>
   );
-}
+};
+
+// function BloodDonationPage() {
+//   const navigation = useNavigation();
+//   return (
+//     <View style={{ flex: 1 }}>
+//       <View style={styles.header}>
+//         <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+//           <MaterialIcons name="arrow-back" size={24} color="#fff" />
+//         </TouchableOpacity>
+//         <Text style={styles.headerTitle}>Blood Donation Campaigns</Text>
+//       </View>
+//       {/* <OngoingCampaigns/> */}
+//     </View>
+
+
+  
+//   );
+// }
+
+// export default BloodDonationPage;
+
 const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',

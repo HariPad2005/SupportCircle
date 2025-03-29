@@ -142,8 +142,10 @@
 //   },
 // });
 import { StatusBar } from 'expo-status-bar';
+import { enableScreens } from 'react-native-screens';
+enableScreens();
 import { Image, StyleSheet, View, BackHandler, Alert } from 'react-native';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
 import Login from './screens/Login';
 import Signup from './screens/Signup';
@@ -157,7 +159,7 @@ import VoluntaryDonationDetailsPage from './screens/VoluntaryDonationDetails';
 import Animated, { useSharedValue, useAnimatedStyle, withTiming, Easing } from 'react-native-reanimated';
 import { useEffect, useState } from 'react';
 import Profile from './screens/Profile';
-const Stack = createStackNavigator();
+const Stack = createNativeStackNavigator();
 
 const LandScreen = ({ navigation }) => {
   const logoOpacity = useSharedValue(0);

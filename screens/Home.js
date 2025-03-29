@@ -683,6 +683,7 @@ import { View, Text, TouchableOpacity, StyleSheet, Dimensions, Image, ScrollView
 import { useNavigation } from '@react-navigation/native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import BloodDonationPage from './BloodDonationPage';
 import * as Font from 'expo-font';
 // import Login from './Login';
 
