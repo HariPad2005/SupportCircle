@@ -986,6 +986,8 @@ import { MaterialIcons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { supabase } from '../supabase';
+import { LinearGradient } from 'expo-linear-gradient'; // Add this import
+
 
 const Tab = createBottomTabNavigator();
 
@@ -1297,20 +1299,43 @@ function YourCampaigns() {
 };
 
 export default function BloodDonationPage() {
+  const navigation = useNavigation();
+
   return (
-    
-    <Tab.Navigator
-      screenOptions={{
-        tabBarStyle: { marginTop: 10 },
-        tabBarIndicatorStyle: { backgroundColor: '#007bff' },
-        tabBarLabelStyle: { fontSize: 14, fontWeight: 'bold' },
-      }}
-    >
-      <Tab.Screen name="Ongoing Campaigns" component={OngoingCampaigns} />
-      <Tab.Screen name="Your Campaigns" component={YourCampaigns} />
-    </Tab.Navigator>
+    <View style={{ flex: 1 }}>
+      {/* Header with Gradient */}
+      <LinearGradient colors={['#007bff', '#0056b4']} style={styles.header}>
+        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+          <MaterialIcons name="arrow-back" size={24} color="#fff" />
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>Blood Donation Campaigns</Text>
+      </LinearGradient>
+
+      {/* Bottom Tab Navigator */}
+      <Tab.Navigator
+        screenOptions={({ route }) => ({
+          tabBarStyle: { backgroundColor: '#007bff', borderTopWidth: 0 },
+          tabBarActiveTintColor: '#fff',
+          tabBarInactiveTintColor: '#d1d1d1',
+          tabBarIcon: ({ color, size }) => {
+            let iconName;
+            if (route.name === 'Ongoing Campaigns') {
+              iconName = 'event';
+            } else if (route.name === 'Your Campaigns') {
+              iconName = 'list-alt';
+            }
+            return <MaterialIcons name={iconName} size={size} color={color} />;
+          },
+          tabBarLabelStyle: { fontSize: 12, fontWeight: 'bold' },
+          tabBarIndicatorStyle: { backgroundColor: '#fff' },
+        })}
+      >
+        <Tab.Screen name="Ongoing Campaigns" component={OngoingCampaigns} />
+        <Tab.Screen name="Your Campaigns" component={YourCampaigns} />
+      </Tab.Navigator>
+    </View>
   );
-};
+}
 
 // function BloodDonationPage() {
 //   const navigation = useNavigation();
