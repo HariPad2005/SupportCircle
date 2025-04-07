@@ -685,9 +685,89 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import BloodDonationPage from './BloodDonationPage';
 import * as Font from 'expo-font';
+import RazorpayCheckout from 'react-native-razorpay';
 // import Login from './Login';
 
 const width = Dimensions.get('window').width;
+
+
+const navigateToHelpList = async () => {
+  try {
+    // Make an API call to your backend to get the Razorpay order_id
+    const response = await fetch('http://192.168.182.33:5000/create-order', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        amount: 5000  // in paise => ₹50
+      })
+    });
+
+    const data = await response.json();
+    const orderId = data.order_id;
+    console.log("Order ID:", orderId);  
+
+    var options = {
+      description: 'Help donation',
+      image: 'https://i.imgur.com/3g7nmJC.jpg',
+      currency: 'INR',
+      key: process.env.KEY_ID, // Replace with your Razorpay public key
+      amount: '5000',
+      name: 'SheSecure',
+      order_id: orderId,
+      prefill: {
+        email: 'user@example.com',
+        contact: '9876543210',
+        name: 'Hariharan'
+      },
+      theme: { color: '#53a20e' }
+    };
+
+    RazorpayCheckout.open(options).then((data) => {
+      // Razorpay returns this object on success:
+      // {
+      //   razorpay_payment_id: string,
+      //   razorpay_order_id: string,
+      //   razorpay_signature: string
+      // }
+      console.log("Payment Data:", data);
+      const paymentInfo = {
+        razorpay_payment_id: data.razorpay_payment_id,
+        razorpay_order_id: data.razorpay_order_id,
+        razorpay_signature: data.razorpay_signature
+      };
+    
+      // Call your backend to verify the payment
+      fetch('http://192.168.182.33:5000/payment-success', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(paymentInfo)
+      })
+      .then(res => res.json())
+      .then(response => {
+        if (response.success) {
+          alert("✅ Payment Verified Successfully!");
+        } else {
+          alert("❌ Payment Verification Failed!");
+        }
+      })
+      .catch(error => {
+        console.error("Error verifying payment:", error);
+        alert("❌ Verification error. Please try again.");
+      });
+    
+    }).catch((error) => {
+      console.error("Payment Error:", error);
+      alert(`❌ Payment failed: ${error.code} | ${error.description}`);
+    });    
+  } catch (error) {
+    console.error("Order creation failed", error);
+    Alert.alert("Error", "Unable to initiate payment");
+  }
+};
 
 export default function Home() {
   const navigation = useNavigation();
@@ -729,9 +809,7 @@ export default function Home() {
     }
   };
 
-  const navigateToHelpList = () => {
-    // navigation.navigate('helplist');
-  };
+
 
   return (
     <ImageBackground source={require('../assets/logo.png')} style={styles.backgroundImage}>
