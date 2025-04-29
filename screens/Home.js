@@ -810,6 +810,9 @@ export default function Home() {
     else if (donationType === 'donate4') {
       navigation.navigate('VoluntaryDonation');
     }
+    else{
+      navigation.navigate('FundRaising');
+    }
   };
 
 
