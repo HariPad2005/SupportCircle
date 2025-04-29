@@ -686,6 +686,8 @@ import { LinearGradient } from 'expo-linear-gradient';
 import BloodDonationPage from './BloodDonationPage';
 import * as Font from 'expo-font';
 import RazorpayCheckout from 'react-native-razorpay';
+
+
 // import Login from './Login';
 
 const width = Dimensions.get('window').width;
@@ -694,7 +696,7 @@ const width = Dimensions.get('window').width;
 const navigateToHelpList = async () => {
   try {
     // Make an API call to your backend to get the Razorpay order_id
-    const response = await fetch('http://192.168.218.14:5000/create-order', {
+    const response = await fetch('http://192.168.218.154:5000/create-order', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -707,18 +709,18 @@ const navigateToHelpList = async () => {
     const data = await response.json();
     const orderId = data.order_id;
     console.log("Order ID:", orderId);  
-
+    console.log("Key Id",process.env.KEY_ID)
     var options = {
       description: 'Help donation',
       image: 'https://i.imgur.com/3g7nmJC.jpg',
       currency: 'INR',
-      key: process.env.KEY_ID, // Replace with your Razorpay public key
+      key: "rzp_test_ubciasMp4wanpD", // Replace with your Razorpay public key
       amount: '5000',
       name: 'SheSecure',
       order_id: orderId,
       prefill: {
         email: 'user@example.com',
-        contact: '9876543210',
+        contact: '8438101781',
         name: 'Hariharan'
       },
       theme: { color: '#53a20e' }
@@ -739,7 +741,7 @@ const navigateToHelpList = async () => {
       };
     
       // Call your backend to verify the payment
-      fetch('http://192.168.182.33:5000/payment-success', {
+      fetch('http://192.168.218.154:5000/payment-success', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
