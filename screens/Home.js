@@ -686,6 +686,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import BloodDonationPage from './BloodDonationPage';
 import * as Font from 'expo-font';
 import RazorpayCheckout from 'react-native-razorpay';
+import { KEY_ID } from '../razor';
 
 
 // import Login from './Login';
@@ -714,7 +715,7 @@ const navigateToHelpList = async () => {
       description: 'Help donation',
       image: 'https://i.imgur.com/3g7nmJC.jpg',
       currency: 'INR',
-      key: "rzp_test_ubciasMp4wanpD", // Replace with your Razorpay public key
+      key: KEY_ID, // Replace with your Razorpay public key
       amount: '5000',
       name: 'SheSecure',
       order_id: orderId,
