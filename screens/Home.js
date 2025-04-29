@@ -694,7 +694,7 @@ const width = Dimensions.get('window').width;
 const navigateToHelpList = async () => {
   try {
     // Make an API call to your backend to get the Razorpay order_id
-    const response = await fetch('http://192.168.182.33:5000/create-order', {
+    const response = await fetch('http://192.168.218.14:5000/create-order', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
