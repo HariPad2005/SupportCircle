@@ -697,7 +697,7 @@ const width = Dimensions.get('window').width;
 const navigateToHelpList = async () => {
   try {
     // Make an API call to your backend to get the Razorpay order_id
-    const response = await fetch('http://192.168.218.154:5000/create-order', {
+    const response = await fetch('http://192.168.218.45:5000/create-order', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -742,7 +742,7 @@ const navigateToHelpList = async () => {
       };
     
       // Call your backend to verify the payment
-      fetch('http://192.168.218.154:5000/payment-success', {
+      fetch('http://192.168.218.45:5000/payment-success', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
